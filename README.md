@@ -57,7 +57,7 @@ There are a few integration tests added that use a test DB and describe more com
 - Metrics: 
     - Two counter metrics have been added: 
         - The time it takes to complete a "borrow book" operation. This allows us to detect if it's getting slower for some reason.
-        - The number of failed borrow attempts. 
+        - The number of failed borrow attempts. This could be important because if this number increases, it's possible that borrowers are trying to borrow nonexistent books or books that are not available. If this happens often, that could mean that somehting is wrong on our side (e.g. we're wrongly indicating that a book is available but it's not). It could also be interesting to track these failed attempts by error type. 
 
 
 ## Notes, possible improvements
