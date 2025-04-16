@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from models.borrower import Borrower
 from models.loan import Loan
 from schemas.borrower import BorrowerCreate
@@ -28,7 +29,10 @@ class BorrowerService:
         Returns:
             Borrower: The borrower object if found, None otherwise.
         """
-        return self.db.query(Borrower).filter(Borrower.id == borrower_id).first()
+        borrower = self.db.query(Borrower).filter(Borrower.id == borrower_id).first()
+        if not borrower:
+            raise HTTPException(status_code=404, detail="Borrower not found")
+        return borrower
 
     def get_borrowed_books(self, borrower_id: int) -> list[Loan]:
         """Get all books borrowed by a borrower.
@@ -37,5 +41,7 @@ class BorrowerService:
         Returns:
             list[Loan]: A list of loan objects associated with the borrower.
         """
-
+        borrower = self.db.query(Borrower).filter(Borrower.id == borrower_id).first()
+        if not borrower:
+            raise HTTPException(status_code=404, detail="Borrower not found")
         return self.db.query(Loan).filter(Loan.borrower_id == borrower_id).all()
