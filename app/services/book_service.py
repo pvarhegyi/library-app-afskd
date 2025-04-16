@@ -5,12 +5,21 @@ from models.loan import Loan
 from opentelemetry import metrics, trace
 from schemas.book import BookCreate
 from sqlalchemy.orm import Session
+import time
 
 tracer = trace.get_tracer("books.tracer")
 
 meter = metrics.get_meter("library-api")
-loan_counter = meter.create_counter(
-    name="loaned_books_total", description="Number of books loaned", unit="1"
+
+borrow_duration_histogram = meter.create_histogram(
+    name="borrow_book_duration",
+    unit="ms",
+    description="Duration of borrow_book operation"
+)
+
+borrow_fail_counter = meter.create_counter(
+    name="borrow_failures_total",
+    description="Total number of failed borrow attempts"
 )
 
 
@@ -51,24 +60,28 @@ class BookService:
         with tracer.start_as_current_span("borrow") as borrow_span:
             borrow_span.set_attribute("book.id", book_id)
             borrow_span.set_attribute("borrower.id", borrower_id)
-
-            loan_counter.add(1, {"book_id": book_id, borrower_id: borrower_id})
-
+            start = time.time()
             book = self.db.query(Book).filter(Book.id == book_id).first()
             borrower = (
                 self.db.query(Borrower).filter(Borrower.id == borrower_id).first()
             )
             if not borrower:
                 borrow_span.set_attribute("error", True)
+                borrow_fail_counter.add(1)
                 raise HTTPException(status_code=404, detail="Borrower not found")
             if not book:
                 borrow_span.set_attribute("error", True)
+                borrow_fail_counter.add(1)
                 raise HTTPException(status_code=404, detail="Book not found")
             if not book.available:
                 borrow_span.set_attribute("already_borrowed", True)
+                borrow_fail_counter.add(1)
                 raise HTTPException(status_code=400, detail="Book not available")
             book.available = False
             loan = Loan(borrower_id=borrower_id, book_id=book.id)
             self.db.add(loan)
             self.db.commit()
+            end = time.time()
+            duration = (end - start) * 1000
+            borrow_duration_histogram.record(duration)
             return loan
