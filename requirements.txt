@@ -1,0 +1,9 @@
+fastapi[all]
+pydantic
+sqlalchemy
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-instrumentation-fastapi
+opentelemetry-exporter-otlp
+pytest
+httpx
