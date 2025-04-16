@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = {extras = ["all"], version = "*"}
+pydantic = "*"
+sqlalchemy = "*"
+opentelemetry-api = "*"
+opentelemetry-sdk = "*"
+opentelemetry-instrumentation-fastapi = "*"
+opentelemetry-exporter-otlp = "*"
+pytest = "*"
+httpx = "*"
+uvicorn = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

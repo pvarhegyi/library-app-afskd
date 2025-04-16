@@ -1,16 +1,13 @@
-import os
+from db.database import engine
 from fastapi import FastAPI
 from models.base import Base
-from db.database import engine
-from routers import books_api, borrowers_api
 from opentelemetry import metrics
-from opentelemetry.sdk.metrics import MeterProvider
-from opentelemetry.sdk.resources import Resource
-from opentelemetry.sdk.metrics.export import (
-    ConsoleMetricExporter,
-    PeriodicExportingMetricReader,
-)
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.sdk.metrics import MeterProvider
+from opentelemetry.sdk.metrics.export import (ConsoleMetricExporter,
+                                              PeriodicExportingMetricReader)
+from opentelemetry.sdk.resources import Resource
+from routers import books_api, borrowers_api
 
 exporter = ConsoleMetricExporter()
 reader = PeriodicExportingMetricReader(exporter)

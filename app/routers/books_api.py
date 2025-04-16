@@ -1,14 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List
+
 import pytest
-from sqlalchemy.orm import Session
 from db.database import get_db
+from fastapi import APIRouter, Depends, HTTPException, status
 from models.base import Base
 from schemas.book import BookCreate, BookResponse
 from schemas.loan import LoanResponse
 from services.book_service import BookService
-from typing import List
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/books", tags=["Books"])
+
 
 @router.get("/", response_model=List[BookResponse])
 def list_books(db: Session = Depends(get_db)):

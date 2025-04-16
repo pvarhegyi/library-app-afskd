@@ -1,6 +1,6 @@
 # models/borrower.py
-from sqlalchemy import Column, Integer, String
 from models.base import Base
+from sqlalchemy import Column, Integer, String
 
 
 class Borrower(Base):

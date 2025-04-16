@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, func
 from models.base import Base
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, func
 
 
 class Loan(Base):

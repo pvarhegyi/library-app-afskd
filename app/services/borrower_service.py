@@ -1,7 +1,7 @@
-from sqlalchemy.orm import Session
 from models.borrower import Borrower
 from models.loan import Loan
 from schemas.borrower import BorrowerCreate
+from sqlalchemy.orm import Session
 
 
 class BorrowerService:

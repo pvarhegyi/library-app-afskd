@@ -1,10 +1,10 @@
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+import pytest
 from db.database import get_db
+from fastapi.testclient import TestClient
 from main import app
 from models.base import Base
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import pytest
 
 TEST_DATABASE_URL = "sqlite:///./test.db"
 
@@ -42,6 +42,7 @@ def client(db_session):
     app.dependency_overrides[get_db] = override_get_db
 
     from fastapi.testclient import TestClient
+
     client = TestClient(app)
     yield client
 
@@ -59,6 +60,7 @@ def test_add_list_books(client):
     assert response.json()[0]["title"] == "1984"
     assert response.json()[0]["author"] == "George Orwell"
 
+
 def test_borrow_existing_book(client):
     response = client.post(
         "/api/borrowers/", json={"name": "Alice", "email": "alice@alice.com"}
@@ -74,8 +76,11 @@ def test_borrow_existing_book(client):
     assert response.json()["title"] == "1984"
     book_id = response.json()["id"]
 
-    response = client.post(f"/api/books/{book_id}/borrow/", params={"borrower_id": borrower_id})
+    response = client.post(
+        f"/api/books/{book_id}/borrow/", params={"borrower_id": borrower_id}
+    )
     assert response.status_code == 200
+
 
 def test_borrow_nonexisting_book(client):
     response = client.post(
@@ -85,7 +90,8 @@ def test_borrow_nonexisting_book(client):
     assert response.json()["name"] == "Alice"
     borrower_id = response.json()["id"]
 
-    response = client.post("/api/books/99999/borrow/", params={"borrower_id": borrower_id})
+    response = client.post(
+        "/api/books/99999/borrow/", params={"borrower_id": borrower_id}
+    )
     assert response.status_code == 404
     assert response.json()["detail"] == "Book not found"
-

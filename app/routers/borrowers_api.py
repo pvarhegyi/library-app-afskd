@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from typing import List
+
 from db.database import get_db
+from fastapi import APIRouter, Depends, HTTPException, status
 from schemas.borrower import BorrowerCreate, BorrowerResponse
 from schemas.loan import LoanResponse
 from services.borrower_service import BorrowerService
-from typing import List
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/borrowers", tags=["Borrowers"])
 

@@ -1,10 +1,10 @@
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
 from models.book import Book
 from models.borrower import Borrower
 from models.loan import Loan
+from opentelemetry import metrics, trace
 from schemas.book import BookCreate
-from opentelemetry import trace, metrics
+from sqlalchemy.orm import Session
 
 tracer = trace.get_tracer("books.tracer")
 
@@ -26,7 +26,7 @@ class BookService:
         return self.db.query(Book).all()
 
     def add_book(self, book_data: BookCreate) -> Book:
-        """ Add a new book to the database.
+        """Add a new book to the database.
         Args:
             book_data (BookCreate): The book data to be added.
         Returns:
@@ -55,7 +55,9 @@ class BookService:
             loan_counter.add(1, {"book_id": book_id, borrower_id: borrower_id})
 
             book = self.db.query(Book).filter(Book.id == book_id).first()
-            borrower = self.db.query(Borrower).filter(Borrower.id == borrower_id).first()
+            borrower = (
+                self.db.query(Borrower).filter(Borrower.id == borrower_id).first()
+            )
             if not borrower:
                 borrow_span.set_attribute("error", True)
                 raise HTTPException(status_code=404, detail="Borrower not found")
