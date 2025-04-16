@@ -1,3 +1,5 @@
+import time
+
 from fastapi import HTTPException
 from models.book import Book
 from models.borrower import Borrower
@@ -5,7 +7,6 @@ from models.loan import Loan
 from opentelemetry import metrics, trace
 from schemas.book import BookCreate
 from sqlalchemy.orm import Session
-import time
 
 tracer = trace.get_tracer("books.tracer")
 
@@ -14,12 +15,11 @@ meter = metrics.get_meter("library-api")
 borrow_duration_histogram = meter.create_histogram(
     name="borrow_book_duration",
     unit="ms",
-    description="Duration of borrow_book operation"
+    description="Duration of borrow_book operation",
 )
 
 borrow_fail_counter = meter.create_counter(
-    name="borrow_failures_total",
-    description="Total number of failed borrow attempts"
+    name="borrow_failures_total", description="Total number of failed borrow attempts"
 )
 
 

@@ -12,10 +12,11 @@ opentelemetry-sdk = "*"
 opentelemetry-instrumentation-fastapi = "*"
 opentelemetry-exporter-otlp = "*"
 pytest = "*"
-httpx = "*"
 uvicorn = "*"
 
 [dev-packages]
+black = "*"
+isort = "*"
 
 [requires]
 python_version = "3.11"

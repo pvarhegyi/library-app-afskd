@@ -60,18 +60,6 @@ There are a few integration tests added that use a test DB and describe more com
         - The number of failed borrow attempts. 
 
 
-## Technologies used
-
-- FastAPI - web framework
-
-- SQLite – local relational database
-
-- SQLAlchemy – ORM for database access
-
-- OpenTelemetry – tracing & metrics
-
-- Pytest – testing framework
-
 ## Notes, possible improvements
 Since this project is a PoC, many things could be improved / added
 
